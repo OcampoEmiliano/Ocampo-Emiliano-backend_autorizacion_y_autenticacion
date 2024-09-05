@@ -1,29 +1,41 @@
-import jwt from 'jsonwebtoken';
-
-import { SECRET_KEY } from '../config/env.js';
-import { database } from '../db/database.js';
+import jwt from "jsonwebtoken";
+import { SECRET_KEY } from "../config/env.js";
+import { connect } from "../db/database.js";
 
 // Middleware para verificar el token JWT
-export default (req, res, next) => {
-    console.log(req.session)
-    console.log('-----------')
-    console.log(req.cookies)
-    const token = req.cookies.authToken || req.session.token;
+export const validarJWT = async (req, res, next) => {
+  console.log(req.session);
+  console.log("-----------");
+  console.log(req.cookies);
+  const token = req.cookies.authToken || req.session.token;
 
-    if (!token) {
-        return res.status(403).json({ message: 'Token no proporcionado' });
-    }
+  if (!token) {
+    return res.status(403).json({ message: "Token no proporcionado" });
+  }
 
-     const decoded = jwt.verify(token, SECRET_KEY);
+  try {
+    // Usamos el método verify para verificar el token.
+    // El primer parámetro es el token que recibimos por el header, y el segundo el secret con el que firmamos el token.
+    const decoded = jwt.verify(token, SECRET_KEY);
 
-    // Se busca al usuario en la base de datos
-    const user = database.user.find( user => user.id === decoded.userId );
+    const connection = await connect();
 
+    // Buscamos el usuario por id.
+    const [user] = await connection.query(
+      "SELECT * FROM users WHERE id=? LIMIT 1",
+      [decoded.id]
+    );
+
+    // En caso de que no exista retornamos un error.
     if (!user) {
-        return res.status(401).json({ message: 'Token inválido' });
+      return res.status(401).json({ message: "Token inválido" });
+    } else {
+      // Caso contrario, agregamos la información del usuario decodificada al request.
+      req.user = user;
+      next();
     }
-
-    req.user = user; // Agrega la información del usuario decodificada al request
-
-    next();
+  } catch (error) {
+    // Si ocurre un error retornamos un error.
+    return res.status(401).json({ message: "Token inválido" });
+  }
 };
