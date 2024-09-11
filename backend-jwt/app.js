@@ -3,7 +3,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import cors from 'cors';
-import { PORT } from './config/env.js';
+import { PORT } from './config/config.js';
 import morgan from 'morgan';
 
 const app = express();
