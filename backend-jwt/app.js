@@ -5,6 +5,7 @@ import session from 'express-session';
 import cors from 'cors';
 import { PORT } from './config/config.js';
 import morgan from 'morgan';
+import {userRouter} from './Routes/Auth.Routes.js'
 
 const app = express();
 
@@ -22,7 +23,7 @@ app.use(session({
     saveUninitialized: true,
     cookie: { secure: false } // Usar 'true' si usas HTTPS
 }));
-
+app.use(userRouter);
 // Servidor escuchando
 app.listen(PORT, () => {
     console.log(`Servidor corriendo en http://localhost:${PORT}`);

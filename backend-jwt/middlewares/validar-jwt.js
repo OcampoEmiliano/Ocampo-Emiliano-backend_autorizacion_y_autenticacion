@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { SECRET_KEY } from "../config/env.js";
+import { SECRET_KEY } from "../config/config.js";
 import { connect } from "../db/database.js";
 
 // Middleware para verificar el token JWT
@@ -32,7 +32,6 @@ export const validarJWT = async (req, res, next) => {
     } else {
       // Caso contrario, agregamos la información del usuario decodificada al request.
       req.user = user;
-      next();
     }
   } catch (error) {
     // Si ocurre un error retornamos un error.

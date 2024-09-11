@@ -17,7 +17,7 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="text-center mb-4">Registro de Usuario</h3>
-                        <form id="login-form">
+                        <form id="register-form">
                             <div class="form-floating mb-3">
                                 <input type="text" class="form-control" id="username" placeholder="Username" required>
                                 <label for="username">Usuario</label>
@@ -43,7 +43,7 @@
         integrity='sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy'
         crossorigin='anonymous'></script>
     <script>
-        document.getElementById('login-form').addEventListener('submit', async function (event) {
+        document.getElementById('register-form').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             const username = document.getElementById('username').value;
