@@ -1,17 +1,18 @@
-import { DBconnect } from "../db/database";
+import { DBconnect } from "../db/database.js";
 
-export async function register (req,res) {
-    const {username,password} = req.body;
-    const sql = 'INSERT INTO users (username,password) VALUES (?,?)';
+export async function register(req, res) {
+    const { username, password } = req.body;
+    const sql = 'INSERT INTO users (username, password) VALUES (?, ?)';
     try {
-const connection = await DBconnect();
-await connection.query(sql,[username,password]);
-res.json({
-    msg:'usuario registrado correctamente'
-});
-connection.end();
-    } catch(error) {
-res.status(500).json({massage: 'error al registrar el usuario'})
+        const connection = await DBconnect();
+        await connection.query(sql, [username, password]);
+        res.json({
+            msg: 'Usuario registrado correctamente'
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Error al registrar el usuario' });
+    } finally {
+        if (connection && connection.end) connection.end();
     }
 }
 
@@ -21,8 +22,8 @@ export async function login (req, res) {
     // Buscar usuario
     const connection = DBconnect();
     const sql = 'SELECT * FROM users where username = ?';
-    const [user] = (await connection).query(sql,[username,password]);
-
+    const [Rows] = await connection.query(sql,[username,password]);
+const user = Rows[0];
     if (user) {
         // Guardar información del usuario en la sesión
         req.session.userId = user.id;
